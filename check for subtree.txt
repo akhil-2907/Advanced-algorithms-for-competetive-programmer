@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+vector<ll>v[200001];
+
+ll level[200001];
+ll  _in[200001];
+ll  _out[200001] ;
+ll  _par[200001];
+
+ll timer=0 ;
+
+void dfs(ll node,ll par, ll lvl)
+{
+    level[node]=lvl;
+
+    _in[node]=timer++;
+    _par[node]=par;
+
+    for(auto child : v[node] )
+    {
+        if(child!=par)
+        {
+            dfs(child,node,lvl+1);
+        }
+    }
+    _out[node]=timer++;
+}
+
+
+int main()
+{
+   ll n, m;  cin>>n>>m;
+
+   for(ll i=1;i<n;i++)
+   {
+       ll a, b;  cin>>a>>b;
+       v[a].push_back(b);
+       v[b].push_back(a);
+   }
+   
+   dfs(1,-1,0);
+
+   while(m--)
+   {
+       ll cnt; cin>>cnt;
+       ll farth,dp=-1;
+       
+       vector<ll>c(cnt);
+
+       for( ll i=0;i<cnt;i++)
+       {
+           cin>>c[i];
+           if(level[c[i]]>dp) dp=level[c[i]], farth=c[i];
+
+           c[i]=_par[c[i]];
+       }
+       string ans = "YES";
+
+       for(ll i=0;i<cnt;i++)
+       {
+           if(c[i]==-1) continue;
+
+           if(_in[c[i]] > _in[farth] || _out[c[i]] < _in[farth])
+           {
+               ans="NO";
+               break;
+           }
+       }
+       cout<<ans<<endl;
+   }
+
+}

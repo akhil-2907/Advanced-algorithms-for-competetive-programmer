@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll int
+
+vector<pair<ll,ll>>v[5010];
+vector<ll>id(5010);
+vector<ll>vec;
+pair<ll,ll>dp[5010][5010];
+ll n,m,t;
+void topsort()
+{
+    stack<ll>s;
+    for(ll i=1;i<=n;i++)
+    {
+        if(id[i]==0) s.push(i);
+    }
+    while(!s.empty())
+    {
+        ll x = s.top();
+        s.pop();
+        vec.push_back(x);
+
+        for(auto [a,b] : v[x])
+        {
+            id[a]--;
+            if(id[a]==0)
+            {
+                s.push(a);
+            }
+        }
+    }
+}
+int main()
+{
+      cin>>n>>m>>t;
+
+    while(m--)
+    {
+        ll a,b,c;  cin>>a>>b>>c;
+        v[a].push_back({b,c});
+        id[b]++;
+    }
+    topsort();
+   //for(auto i : vec) cout<<i<<" ";
+   for(ll i=0;i<=n;i++)
+   {
+       for(ll j=0;j<=n;j++)
+       {
+           dp[i][j]={1e9+5,1e9+5};
+       }
+   }
+    dp[1][1]={0,0};
+
+   for(ll i=0;i<n;i++)
+   {
+       for(ll j=1;j<=n;j++)
+       {
+           ll node = vec[i];
+           if(dp[node][j].first!=1e9+5)
+           {
+                for(auto [a,b] : v[node])
+                {
+                    ll mintime = dp[node][j].first+b;
+
+                    if(mintime<dp[a][j+1].first)
+                    {
+                        dp[a][j+1].first= mintime;
+                        dp[a][j+1].second= node;
+                    }
+                }
+           }
+       }
+   }
+   ll ans =0;
+    for(ll j=1;j<=n;j++)
+    {
+        if(dp[n][j].first<=t)
+        {
+            ans = j;
+        }
+    }
+    stack<ll>s;
+    cout<<ans<<endl;
+    ll node =n;
+    while(ans)
+    {
+        s.push(node);
+        node = dp[node][ans].second;
+        ans--;
+    }
+    while(!s.empty())
+    {
+        cout<<s.top()<<" ";
+        s.pop();
+    }
+
+   
+
+}

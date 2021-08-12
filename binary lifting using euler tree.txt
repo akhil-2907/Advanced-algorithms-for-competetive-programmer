@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+using namespace std;
+vector<int>vect[1001];
+#define maxn 10
+int LCA[1001][maxn+1];
+int level[1001];
+int timer;
+int tin[1001];
+int tout[1001];
+//
+void dfs(int node,int par,int lvl)
+{
+  tin[node]=++timer;
+  level[node]=lvl;
+  LCA[node][0] =par;
+ 
+  for(int i=1;i<=maxn;i++){
+  if(LCA[node][i-1]!=-1)
+   LCA[node][i]=LCA[LCA[node][i-1]][i-1];
+  }
+ 
+ 
+  for(auto child:vect[node])
+ {
+   if(child!=par)
+   dfs(child,node,lvl+1);
+ }
+ tout[node]=++timer;
+}
+//
+bool is_valid(int a ,int b)
+{
+return tin[a] <= tin[b] && tout[a] >= tout[b];
+}
+//
+int lca(int a,int b)
+{
+   if (is_valid(a,b))
+   return a;
+
+   if(is_valid(b,a))
+   return b;
+ 
+   for(int i=maxn;i>=0;--i)
+   {
+     if(!is_valid(LCA[a][i],b)&& LCA[a][i]!=-1)
+        a =LCA[a][i];
+   }
+   return LCA[a][0];
+}
+//
+ 
+int main()
+{
+  int n; cin>>n;
+  for(int i=0;i<=n;i++)  {
+  for(int j=0;j<=maxn;j++)
+  LCA[i][j]=-1;
+  }
+  for(int i=1;i<n;i++)
+  { int a,b;
+  cin>>a>>b;
+    vect[a].push_back(b);
+    vect[b].push_back(a);
+  }
+  timer =0;
+  dfs(1,-1,0);
+  int q;
+  cin>>q;
+  while(q--)
+  { int a,b;
+    cin>>a>>b;
+    cout<<lca(a,b)<<endl;
+  } 
+}

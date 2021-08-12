@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+using namespace std;
+vector<int>vect[100001];
+#define ll long long
+set<int>s;
+int st[100001];
+int low[100001];
+int visited[100001];
+int timer ;
+//children count  chld
+void dfs(int node,int par)
+{
+  st[node]=low[node]=timer++;
+  visited[node]=1;
+  int chld=0;
+  for(auto child:vect[node])
+  {
+    if(child==par)  continue;
+    if(visited[child]==1)
+    {
+      low[node]=min(low[node],st[child]);
+    }
+    else
+    {
+      dfs(child,node);
+      chld++;//backedge
+      low[node]=min(low[node],low[child]);
+      if(par!=-1 &&low[child]>=st[node])
+      {
+        s.insert(node);
+      }
+ 
+    }
+  }
+  if(par==-1&&chld>1)  s.insert(node);
+ 
+}
+ 
+ 
+int main()
+{
+ while(1)
+ {   ll n,m;
+    cin>>n>>m;
+ 
+   if(n==0&&m==0) break;
+   for(int i=1;i<100001;i++)
+   {
+     vect[i].clear();
+     visited[i]=0;
+     st[i]=0;low[i]=0;
+   }
+   s.clear();
+    timer =1;
+ 
+   for(int i=0;i<m;i++)
+   {int a,b;
+    cin>>a>>b;
+    vect[a].push_back(b);
+    vect[b].push_back(a);
+  }
+  for(int i=1;i<=n;i++)
+  {
+    if(visited[i]==0)
+    {
+      dfs(i,-1);
+    }
+  }
+  cout<<s.size()<<endl;;
+ }
+}

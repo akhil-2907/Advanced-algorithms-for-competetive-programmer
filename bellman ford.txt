@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+vector<int>bellman_ford(int n,int src,vector<vector<int>>edges)
+{
+    vector<int>dist(n+1,INT_MAX);
+    dist[src]=0;
+
+    for(int i=0;i<n-1;i++)
+    {
+        for(auto child:edges)
+        {
+            int u =child[0];
+            int v =child[1];
+            int w =child[2];
+
+            if( dist[u]!=INT_MAX&& dist[v]>dist[u]+w)
+            {
+                dist[v]=dist[u]+w;
+            }
+        }
+    }
+
+    for(auto child:edges)
+    {
+        int u =child[0];
+        int v =child[1];
+        int w =child[2];
+
+        if( dist[u]!=INT_MAX&& dist[v]>dist[u]+w)
+        {
+             cout<<"negative edge weight";
+             exit(0);
+        }
+    }
+    return dist;
+}   
+
+int main()
+{
+    vector<vector<int>>edges;
+
+    int n,m; cin>>n>>m;
+
+
+    for(int i=0;i<m;i++)
+    {
+        int u,v,w;
+        cin>>u>>v>>w;
+        edges.push_back({u,v,w});
+    }
+
+   vector<int>ans = bellman_ford(n,1,edges);
+
+   for(int i=1;i<=n;i++)
+   {
+        cout<<"distance of node"<<i<<"from source"<<1<<" "<<ans[i]<<endl;
+   }
+}

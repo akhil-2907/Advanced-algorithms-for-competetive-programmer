@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+bool check(string str)
+{  int k =str.size();
+  stack<char>q;
+  for(int i=0;i<str.size();i++)
+  {
+    if(str[i]=='('||str[i]=='{'||str[i]=='[')  {
+    q.push(str[i]);
+    k--;
+    }
+
+    else if(!q.empty()&&((str[i]==')'&&q.top()=='(')||(str[i]=='}'&&q.top()=='{')||(str[i]==']'&&q.top()=='[')))
+    {
+      q.pop();
+      k--;
+    }
+  }
+  if(q.empty()&&k==0)  return true;
+  else   return  false;
+}
+
+ int main()
+ { int n;  cin>>n;
+ while(n--){
+   string str;
+   cin>>str;
+
+  int k = check(str);
+  if(k==true)  cout<<"YES"<<endl;
+  else cout<<"NO"<<endl;
+ }
+ }
